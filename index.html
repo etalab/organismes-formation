@@ -1,0 +1,88 @@
+<!doctype html>
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+
+  <title>Liste Publique des Organismes de Formation</title>
+  <meta name="description" content="Liste Publique des Organismes de Formation">
+  <meta name="author" content="Etalab">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/input.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/icon.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/button.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/search.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/loader.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/transition.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/site.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/reset.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/components/transition.js"></script>
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <div class="header">
+    <div>formations.data.gouv.fr</div>
+  </div>
+
+  <div class="search">
+    <h1>Organismes de Formation</h1>
+
+    <form id="form" class="ui massive action input">
+      <input id="textinput" type="text" placeholder="Rechercher...">
+      <button class="ui icon massive button"><i class="search icon"></i></button>
+    </form>
+
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    function getData(url) {
+      return fetch(url)
+        .then(response => response.json())
+        .catch((err) => {
+          console.error(err)
+          throw err
+      })
+    }
+
+    const url = 'https://inspire.data.gouv.fr/api/geogw/records'
+    const form = document.getElementById('form')
+    const result = document.getElementById('result')
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        result.innerHTML = '<div class="ui active centered inline massive loader"></div>'
+        const q = document.getElementById('textinput').value
+        const promise = getData(url + `?q=${q}`)
+        promise
+          .then( r => {
+            result.innerHTML = null
+            if (!r.results.length) return result.insertAdjacentHTML('afterbegin', '<div>Aucune formation trouvée</div>')
+
+            r.results.map( data =>
+              result.insertAdjacentHTML('beforeend', `
+                <div class="formations">
+                  <h3>${data.metadata.title}</h3>
+                  <div>${data.metadata.description}</div>
+                  <div><div class="formations-id">${data.recordId}</div></div>
+                </div>`)
+              )
+
+            result.insertAdjacentHTML('afterbegin', `<div><b>${r.count}</b> formations trouvées</div>`)
+            $('.formations').transition('vertical flip in')
+          }
+        )
+      })
+  </script>
+</body>
+</html>

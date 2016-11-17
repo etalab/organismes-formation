@@ -1,0 +1,55 @@
+.header {
+  padding: 1em;
+  color: white;
+  background-color: #58A4B0;
+
+  font-size: x-large;
+  font-family: "Century Gothic", "Gilles Sans", "Open Sans", "Helvetica Neue", "Arial", sans-serif;
+}
+
+.hide {
+  display: none;
+}
+
+.search {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 7%;
+
+  font-family: "Century Gothic", "Gilles Sans", "Open Sans", "Helvetica Neue", "Arial", sans-serif;
+}
+
+#form {
+  margin: 1em;
+}
+
+#form .button {
+  color: white;
+  background-color: #58A4B0;
+}
+
+#textinput {
+  padding-right: 20em;
+}
+
+#result {
+  display: flex;
+  flex-direction: column;
+  margin: 2em 5em;
+}
+
+#result > div {
+  margin-bottom: 2em;
+}
+
+.formations {
+  border-left: 1px solid #ddd;
+  padding-left: 1em;
+}
+
+.formations .formations-id {
+  margin: 1em;
+  font-size: 12px;
+}
