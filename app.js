@@ -7,7 +7,7 @@ function getData(url) {
   })
 }
 
-const url = 'https://inspire.data.gouv.fr/api/geogw/records'
+const url = 'http://127.0.0.1:8888/organizations/'
 const form = document.getElementById('form')
 const result = document.getElementById('result')
 
@@ -24,13 +24,15 @@ form.addEventListener('submit', function (event) {
         r.results.map( function (data) {
           return result.insertAdjacentHTML('beforeend',
             '<div class="formations">' +
-              '<h3>' + data.metadata.title + '</h3>' +
-              '<div>' + data.metadata.description + '</div>' +
-              '<div><div class="formations-id">' + data.recordId + '</div></div>' +
+              '<div>Numéro d\'établissement de la structure: <b>' + data.da_no_etab + '</b></div>' +
+              '<div>Raison Sociale: <b>' + data.da_raison_sociale + '</b></div>' +
+              '<div>Numéro de SIREN de la structure: <b>' + data.da_siren + '</b></div>' +
+              '<div>Nombre de formateurs: <b>' + data.form_total + '</b></div>' +
+              '<div>Numéro de la Déclaration d\'Activité: <b>' + data.numero_de_da + '</b></div>' +
             '</div>')
         })
 
-        result.insertAdjacentHTML('afterbegin', '<div><b>' + r.count + '</b> formations trouvées</div>')
+        result.insertAdjacentHTML('afterbegin', '<div><b>' + r.total + '</b> formations trouvées</div>')
         $('.formations').transition('vertical flip in')
       }
     )
