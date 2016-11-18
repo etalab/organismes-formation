@@ -25,11 +25,7 @@ form.addEventListener('submit', function (event) {
         result.innerHTML = null
         if (!r.results.length) return result.insertAdjacentHTML('afterbegin', '<div>Aucun établissement de formation trouvé</div>')
 
-        r.results.sort( function (a, b) {
-          return a.score < b.score
-        }).map( function (data) {
-          const organization = data.organization
-
+        r.results.map( function (organization) {
           return result.insertAdjacentHTML('beforeend',
             '<div class="formations">' +
               '<div>Raison Sociale : <b> ' + displayValue(organization.da_raison_sociale) + '</b></div>' +
