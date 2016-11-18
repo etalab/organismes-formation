@@ -11,7 +11,7 @@ function displayValue(data) {
   return data || 'Non communiqué'
 }
 
-const url = 'http://ofsearch.herokuapp.com/organizations/'
+const url = 'https://ofsearch.herokuapp.com/organizations/'
 const form = document.getElementById('form')
 const result = document.getElementById('result')
 
