@@ -1,8 +1,8 @@
-const url = '/organizations/'
-const limit = 20  // ie. page size
-const paginationWidth = 2  // ie. number before and after until ellipsis
-const form = document.getElementById('form')
-const result = document.getElementById('result')
+var url = '/organizations/'
+var limit = 20  // ie. page size
+var paginationWidth = 2  // ie. number before and after until ellipsis
+var form = document.getElementById('form')
+var result = document.getElementById('result')
 
 
 function getData(url) {
@@ -19,7 +19,7 @@ function displayValue(data, q) {
 }
 
 function formatAdress(data, type) {
-  const parts = ['<h3>Adresse ' + type + '</h3>'];
+  var parts = ['<h3>Adresse ' + type + '</h3>'];
   if (data['adr_rue_complement_' + type]) {
     parts.push('<div>' + data['adr_rue_complement_' + type] + '</div>')
   }
@@ -61,8 +61,8 @@ function formatResult(organization, q) {
 }
 
 function paginationItem(label, index, query, current, total) {
-  const el = document.createElement('a')
-  const disabled = index === undefined || index <= 0 || index > total
+  var el = document.createElement('a')
+  var disabled = index === undefined || index <= 0 || index > total
   el.classList.add('item')
   el.textContent = label
   if (index === current) el.classList.add('active')
@@ -77,7 +77,7 @@ function paginationItem(label, index, query, current, total) {
 }
 
 function pagination(data) {
-  const container = document.createElement('div')
+  var container = document.createElement('div')
   container.classList.add('ui', 'pagination', 'compact', 'menu')
   total = Math.ceil(data['total'] / data['limit'])
   current = data['page']
@@ -87,14 +87,14 @@ function pagination(data) {
   container.appendChild(paginationItem('«', data['page'] - 1, query, current, total))
   if (min > 1) container.appendChild(paginationItem(1, 1, query, current, total))
   if (min > 2) container.appendChild(paginationItem('…', undefined, query, current, total))
-  for (let i = min; i <= max; i++) {
+  for (var i = min; i <= max; i++) {
     container.appendChild(paginationItem(i, i, query, current, total))
   }
   if (max < total - 1) container.appendChild(paginationItem('…', undefined, query, current, total))
   if (max < total) container.appendChild(paginationItem(total, total, query, current, total))
   container.appendChild(paginationItem('»', data['page'] + 1, query, current, total))
 
-  const wrapper = document.createElement('div')
+  var wrapper = document.createElement('div')
   wrapper.classList.add('pagination-wrapper')
   wrapper.appendChild(container)
   return wrapper
@@ -102,15 +102,15 @@ function pagination(data) {
 
 function fetchResult(q, page) {
   result.innerHTML = '<div class="ui active centered inline massive loader"></div>'
-  let query = url + '?q=' + q + '&limit=' + limit
+  var query = url + '?q=' + q + '&limit=' + limit
   if (page) query += '&page=' + page
-  const promise = getData(query)
+  var promise = getData(query)
   promise
     .then( function (r) {
       result.innerHTML = null
       if (!r.results.length) return result.insertAdjacentHTML('afterbegin', '<div>Aucun établissement de formation trouvé</div>')
 
-      const container = document.createElement('div')
+      var container = document.createElement('div')
       container.classList.add('ui', 'divided', 'items')
       result.appendChild(container)
       r.results.map( function (organization) {
@@ -126,6 +126,6 @@ function fetchResult(q, page) {
 
 form.addEventListener('submit', function (event) {
     event.preventDefault()
-    const q = document.getElementById('textinput').value
+    var q = document.getElementById('textinput').value
     fetchResult(q)
 })
