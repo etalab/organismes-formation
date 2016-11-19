@@ -5,6 +5,7 @@ var form = document.getElementById('form')
 var result = document.getElementById('result')
 
 
+
 function getData(url) {
   return fetch(url)
     .then(function (response) { return response.json() })
@@ -36,7 +37,7 @@ function formatAdress(data, type) {
 
 function highlight(text, q) {
     if (!text) return
-    return q ? text.replace(RegExp('(' + q + ')', 'iu'), '<mark>$1</mark>') : text
+    return q ? text.replace(RegExp('(' + q + ')', 'i'), '<mark>$1</mark>') : text
 }
 
 function formatResult(organization, q) {
