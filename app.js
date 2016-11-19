@@ -117,7 +117,7 @@ function fetchResult(q, page) {
         return container.insertAdjacentHTML('beforeend', formatResult(organization, q))
       })
 
-      result.insertAdjacentHTML('afterbegin', '<div><b>' + r.total + '</b> établissements de formations trouvés</div>')
+      result.insertAdjacentHTML('afterbegin', '<div><b>' + r.total + '</b> établissements de formation trouvés</div>')
       $('.formation').transition('vertical flip in')
 
       if (r.total > r.limit) result.appendChild(pagination(r))
