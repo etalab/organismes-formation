@@ -35,8 +35,6 @@
 }
 
 #result {
-  display: flex;
-  flex-direction: column;
   margin: 2em 5em;
 }
 
@@ -51,4 +49,9 @@
 
 .formation h3 {
     margin-bottom: 0;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
 }

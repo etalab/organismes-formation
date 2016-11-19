@@ -1,3 +1,10 @@
+const url = '/organizations/'
+const limit = 20  // ie. page size
+const paginationWidth = 2  // ie. number before and after until ellipsis
+const form = document.getElementById('form')
+const result = document.getElementById('result')
+
+
 function getData(url) {
   return fetch(url)
     .then(function (response) { return response.json() })
@@ -53,32 +60,72 @@ function formatResult(organization, q) {
           '</article>'
 }
 
+function paginationItem(label, index, query, current, total) {
+  const el = document.createElement('a')
+  const disabled = index === undefined || index <= 0 || index > total
+  el.classList.add('item')
+  el.textContent = label
+  if (index === current) el.classList.add('active')
+  if (disabled) el.classList.add('disabled')
+  if (!disabled && index !== current) {
+      el.addEventListener('click', function(event) {
+          event.preventDefault()
+          fetchResult(query, index)
+      })
+  }
+  return el
+}
 
-const url = '/organizations/'
-const limit = 50
-const form = document.getElementById('form')
-const result = document.getElementById('result')
+function pagination(data) {
+  const container = document.createElement('div')
+  container.classList.add('ui', 'pagination', 'compact', 'menu')
+  total = Math.ceil(data['total'] / data['limit'])
+  current = data['page']
+  query = data['query']
+  min = Math.max(1, current - paginationWidth)
+  max = Math.min(total, current + paginationWidth)
+  container.appendChild(paginationItem('«', data['page'] - 1, query, current, total))
+  if (min > 1) container.appendChild(paginationItem(1, 1, query, current, total))
+  if (min > 2) container.appendChild(paginationItem('…', undefined, query, current, total))
+  for (let i = min; i <= max; i++) {
+    container.appendChild(paginationItem(i, i, query, current, total))
+  }
+  if (max < total - 1) container.appendChild(paginationItem('…', undefined, query, current, total))
+  if (max < total) container.appendChild(paginationItem(total, total, query, current, total))
+  container.appendChild(paginationItem('»', data['page'] + 1, query, current, total))
 
+  const wrapper = document.createElement('div')
+  wrapper.classList.add('pagination-wrapper')
+  wrapper.appendChild(container)
+  return wrapper
+}
+
+function fetchResult(q, page) {
+  result.innerHTML = '<div class="ui active centered inline massive loader"></div>'
+  let query = url + '?q=' + q + '&limit=' + limit
+  if (page) query += '&page=' + page
+  const promise = getData(query)
+  promise
+    .then( function (r) {
+      result.innerHTML = null
+      if (!r.results.length) return result.insertAdjacentHTML('afterbegin', '<div>Aucun établissement de formation trouvé</div>')
+
+      const container = document.createElement('div')
+      container.classList.add('ui', 'divided', 'items')
+      result.appendChild(container)
+      r.results.map( function (organization) {
+        return container.insertAdjacentHTML('beforeend', formatResult(organization, q))
+      })
+
+      result.insertAdjacentHTML('afterbegin', '<div><b>' + r.total + '</b> établissements de formations trouvés</div>')
+      $('.formation').transition('vertical flip in')
+
+      if (r.total > r.limit) result.appendChild(pagination(r))
+    })
+}
 
 form.addEventListener('submit', function (event) {
     event.preventDefault()
-    result.innerHTML = '<div class="ui active centered inline massive loader"></div>'
     const q = document.getElementById('textinput').value
-    const promise = getData(url + '?q=' + q + '&limit=' + limit)
-    promise
-      .then( function (r) {
-        result.innerHTML = null
-        if (!r.results.length) return result.insertAdjacentHTML('afterbegin', '<div>Aucun établissement de formation trouvé</div>')
-
-        const container = document.createElement('div')
-        container.classList.add('ui', 'divided', 'items')
-        result.appendChild(container)
-        r.results.map( function (organization) {
-          return container.insertAdjacentHTML('beforeend', formatResult(organization, q))
-        })
-
-        result.insertAdjacentHTML('afterbegin', '<div><b>' + r.total + '</b> établissements de formations trouvés</div>')
-        $('.formation').transition('vertical flip in')
-      }
-    )
-  })
+    fetchResult(q)
+})
