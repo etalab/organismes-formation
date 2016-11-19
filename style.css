@@ -1,4 +1,4 @@
-.header {
+.site-header {
   padding: 1em;
   color: white;
   background-color: #58A4B0;
@@ -44,17 +44,11 @@
   margin-bottom: 2em;
 }
 
-.formations {
-  border-left: 1px solid #ddd;
-  padding-left: 1em;
+
+.ui.items > .item.formation > .content > .header:not(.ui) {
+    font-size: 1.5em;
 }
 
-.formations .formations-id {
-  margin: 1em;
-  font-size: 12px;
-}
-
-.adr-type {
-  font-weight: bold;
-  margin: 1em 0em 0.5em 0em;
+.formation h3 {
+    margin-bottom: 0;
 }
