@@ -55,3 +55,11 @@
     display: flex;
     justify-content: center;
 }
+
+.ui.popup {
+    padding: 0;
+}
+
+.label .details {
+    display: inline;
+}

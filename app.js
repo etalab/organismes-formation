@@ -3,7 +3,8 @@ var limit = 20  // ie. page size
 var paginationWidth = 2  // ie. number before and after until ellipsis
 var form = document.getElementById('form')
 var result = document.getElementById('result')
-
+var specialtiesUrl = '/specialties/'
+var specialties
 
 
 function getData(url) {
@@ -36,27 +37,45 @@ function formatAdress(data, type) {
 }
 
 function highlight(text, q) {
-    if (!text) return
-    return q ? text.replace(new RegExp('(' + q + ')', 'i'), '<mark>$1</mark>') : text
+  if (!text) return
+  return q ? text.replace(new RegExp('(' + q + ')', 'i'), '<mark>$1</mark>') : text
+}
+
+function formatSpecialties(data) {
+  if (!data || !data.length) return ''
+  return  '<div class="ui right floated label specialties">' + data.length + ' Spécialité(s)</div>' +
+          '<div class="ui flowing popup">' +
+            '<table class="ui definition table">' +
+              '<thead><tr><th></th><th>Nb stagiaires</th><th>Heures/stagiaire</th></tr></thead>' +
+              '<tbody>' +
+                data.map(function(specialty) {
+                  return '<tr>' +
+                    '<td>' + specialty.code + ' - ' + specialties[specialty.code] + '</td>' +
+                    '<td>' + specialty.trainees + '</td>' +
+                    '<td>' + specialty.hours + '</td>' +
+                  '</tr>'
+                }).join('') +
+            '</tbody></table>' +
+          '</div>'
 }
 
 function formatResult(organization, q) {
   return '<article class="item formation">' +
             '<div class="content">' +
               '<h2 class="header">' + highlight(organization.da_raison_sociale, q) + '</h2>' +
-                '<div class="description">' +
-                  '<div class="ui stackable three column grid">' +
-                    '<div class="column">' +
-                      '<div>SIREN : <b>' + displayValue(organization.da_siren, q) + '</b></div>' +
-                      '<div>Déclaration d\'Activité : <b>' + displayValue(organization.numero_de_da, q) + '</b></div>' +
-                      '<div>Numéro d\'établissement : <b>' + displayValue(organization.da_no_etab, q) + '</b></div>' +
-                      '<div>Nombre de formateurs : <b>' + displayValue(organization.form_total) + '</b></div>' +
-                    '</div>' +
-                    '<div class="column">' + formatAdress(organization, 'postale') + '</div>' +
-                    '<div class="column">' + formatAdress(organization, 'physique') + '</div>' +
+              '<div class="description">' +
+                '<div class="ui stackable three column grid">' +
+                  '<div class="column">' +
+                    '<div>SIREN : <b>' + displayValue(organization.da_siren, q) + '</b></div>' +
+                    '<div>Déclaration d\'Activité : <b>' + displayValue(organization.numero_de_da, q) + '</b></div>' +
+                    '<div>Numéro d\'établissement : <b>' + displayValue(organization.da_no_etab, q) + '</b></div>' +
+                    '<div>Nombre de formateurs : <b>' + displayValue(organization.form_total) + '</b></div>' +
                   '</div>' +
+                  '<div class="column">' + formatAdress(organization, 'postale') + '</div>' +
+                  '<div class="column">' + formatAdress(organization, 'physique') + '</div>' +
                 '</div>' +
               '</div>' +
+              '<div class="extra">' + formatSpecialties(organization.specialties) + '</div>' +
             '</div>' +
           '</article>'
 }
@@ -122,6 +141,8 @@ function fetchResult(q, page) {
       $('.formation').transition('vertical flip in')
 
       if (r.total > r.limit) result.appendChild(pagination(r))
+
+      $('.specialties').popup({inline: true})
     })
 }
 
@@ -130,3 +151,12 @@ form.addEventListener('submit', function (event) {
     var q = document.getElementById('textinput').value
     fetchResult(q)
 })
+
+/**
+ * Preload specialties
+ */
+document.addEventListener('DOMContentLoaded', function(){
+    getData(specialtiesUrl).then(function(data) {
+      specialties = data
+    })
+}, false);
