@@ -38,7 +38,7 @@ function formatAdress(data, type) {
 
 function highlight(text, q) {
   if (!text) return
-  return q ? text.replace(new RegExp('(' + q + ')', 'i'), '<mark>$1</mark>') : text
+  return q ? text.replace(new RegExp('(' + q.split(' ').join('|') + ')', 'gi'), '<mark>$1</mark>') : text
 }
 
 function formatSpecialties(data) {
